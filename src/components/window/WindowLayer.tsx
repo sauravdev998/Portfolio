@@ -1,8 +1,8 @@
-import { Suspense, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { AnimatePresence } from 'motion/react'
-import { getApp } from '@/apps/registry'
+import { AppBody } from '@/apps/AppBody'
 import { Window } from '@/components/window/Window'
-import { useDesktop, type WindowState } from '@/store/useDesktop'
+import { useDesktop } from '@/store/useDesktop'
 
 /**
  * Renders every open window and owns the measurement of the work area.
@@ -42,46 +42,10 @@ export function WindowLayer() {
       <AnimatePresence>
         {windows.map((win) => (
           <Window key={win.id} win={win}>
-            <AppBody win={win} />
+            <AppBody appId={win.appId} title={win.title} />
           </Window>
         ))}
       </AnimatePresence>
-    </div>
-  )
-}
-
-/**
- * Resolves a window to its app's body.
- *
- * The Suspense boundary is per-window on purpose: a window loading its chunk
- * must never blank out the windows already on screen.
- */
-function AppBody({ win }: { win: WindowState }) {
-  const App = getApp(win.appId)?.component
-  if (!App) return <NotInstalled title={win.title} />
-
-  return (
-    <Suspense fallback={<Loading />}>
-      <App />
-    </Suspense>
-  )
-}
-
-/**
- * Deliberately not a spinner. App chunks are small enough that they usually
- * arrive within a frame or two, and a spinner that flashes for 30ms reads as a
- * glitch — an empty pane simply looks like the window is still opening.
- */
-function Loading() {
-  return <div className="h-full" aria-busy />
-}
-
-/** An app that's in the dock but not built yet — see the registry. */
-function NotInstalled({ title }: { title: string }) {
-  return (
-    <div className="flex h-full flex-col items-center justify-center gap-1.5 p-6 text-center">
-      <p className="text-sm text-white/70">{title} isn’t installed yet.</p>
-      <p className="text-[13px] text-white/40">Coming in a later update.</p>
     </div>
   )
 }

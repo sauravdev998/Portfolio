@@ -22,6 +22,11 @@
      to the viewport *minus* this strip — both layers must agree on one number. */
   --menubar-height: 28px;
 
+  /* Mobile status bar height, notch included. The springboard grid and the
+     full-screen app sheets both start below this strip, so — like the menu bar
+     above — the number lives here rather than in either component. */
+  --statusbar-height: calc(2.75rem + env(safe-area-inset-top, 0px));
+
   /* Layer ordering — kept here so no component invents its own z-index. */
   --z-index-desktop: 0;
   --z-index-windows: 100;

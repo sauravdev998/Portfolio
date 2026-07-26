@@ -37,12 +37,13 @@ Other structure:
 - **`src/content/*.ts`** — portfolio data (profile, projects, trash), deliberately separate from components. The user writes this content themselves so the voice stays theirs — build machinery, don't rewrite their copy.
 - **`src/lib/springs.ts`** — the three named spring presets (`dock`, `window`, `focus`). All animation must use these; don't invent per-component spring values.
 - **`src/lib/sounds.ts`** — WebAudio-synthesized sounds (no audio assets), gated by `store/useSound.ts` (muted by default, persisted).
+- **`components/menubar/Clock.tsx`** — the one menu-bar item with a real menu behind it: it toggles the `Calendar` month-grid popover. Menu semantics, not dialog — dismiss on outside `pointerdown` (not `click`, so a press on a title bar starts a drag instead of fighting the popover) or `Esc`; focus stays on the button rather than being trapped in the panel. Everything else in the right-hand cluster is décor. The calendar itself is read-only and locale-driven (week start, month/weekday/date strings all from `Intl`) — days are text, not buttons, because there are no events to open.
 - **Terminal.app** parses commands over `content/*.ts` (`help`, `whoami`, `ls`, `cat`, `open <app>`, `neofetch`, `sudo hire-me`).
 
 ## Constraints (from PLAN.md, deliberate decisions)
 
 - Animate `transform`/`opacity` only on the hot path — never `width/height/top/left`.
 - Gate all motion on `prefers-reduced-motion`: no magnification, no bounce, quick fades instead of springs; the boot screen is skipped entirely.
-- Limit `backdrop-blur` surfaces (menu bar + dock + active window only) — it's expensive.
-- Dock icons, traffic lights, etc. are real `<button>`s with `aria-label`s; windows are focus traps (`useFocusTrap`); `Esc` closes the focused window; full keyboard path exists.
+- Limit `backdrop-blur` surfaces (menu bar + dock + active window only) — it's expensive. Panels that hang off one of them (the clock's calendar) are opaque instead.
+- Dock icons, traffic lights, etc. are real `<button>`s with `aria-label`s; windows are focus traps (`useFocusTrap`); `Esc` closes the focused window; full keyboard path exists. `Esc` handlers outside a window stay scoped to their own subtree so they don't also close whatever is focused.
 - True genie minimize and a login screen were considered and rejected on purpose (see PLAN.md Phase 8) — don't add them.

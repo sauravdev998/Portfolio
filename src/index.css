@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  /* Wallpaper palette — a custom dusk gradient, not an Apple asset. */
+  --color-dusk-900: oklch(0.18 0.06 285);
+  --color-dusk-800: oklch(0.26 0.09 292);
+  --color-dusk-700: oklch(0.36 0.12 305);
+  --color-dusk-600: oklch(0.48 0.14 330);
+  --color-dusk-500: oklch(0.62 0.13 20);
+  --color-dusk-400: oklch(0.74 0.11 45);
+
+  /* Chrome surfaces (menu bar, dock, window frames) */
+  --color-chrome-stroke: oklch(1 0 0 / 0.16);
+
+  /* Menu bar height. Lives here because the window manager constrains dragging
+     to the viewport *minus* this strip — both layers must agree on one number. */
+  --menubar-height: 28px;
+
+  /* Layer ordering — kept here so no component invents its own z-index. */
+  --z-index-desktop: 0;
+  --z-index-windows: 100;
+  --z-index-dock: 9000;
+  --z-index-menubar: 9500;
+  --z-index-boot: 10000;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    overflow: hidden; /* the desktop never scrolls; windows do */
+    font-family: var(--font-sans);
+    color: oklch(0.98 0 0);
+    background: var(--color-dusk-900);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+
+    /* The OS metaphor relies on drag; stray text selection breaks the illusion.
+       App bodies opt back in with `select-text`. */
+    user-select: none;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* App bodies scroll, and a stock scrollbar is the single most website-looking
+     thing on screen. macOS overlays a thin translucent one; this is the closest
+     CSS equivalent that still works in Firefox. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(1 0 0 / 0.22) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+    background-color: oklch(1 0 0 / 0.22);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: oklch(1 0 0 / 0.35);
+  }
+
+  :focus-visible {
+    outline: 2px solid oklch(0.85 0.14 250);
+    outline-offset: 2px;
+  }
+}

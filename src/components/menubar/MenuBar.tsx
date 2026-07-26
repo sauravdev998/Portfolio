@@ -1,9 +1,11 @@
-import { BatteryMedium, Globe, Search, SlidersHorizontal, Wifi } from "lucide-react";
+import { BatteryMedium, Globe, Search, SlidersHorizontal, Volume2, VolumeX, Wifi } from "lucide-react";
 import { getApp } from "@/apps/registry";
 import { Clock } from "@/components/menubar/Clock";
 import { Logo } from "@/components/menubar/Logo";
+import { playSound } from "@/lib/sounds";
 import { useDesktop } from "@/store/useDesktop";
 import { useMode } from "@/store/useMode";
+import { useSound } from "@/store/useSound";
 
 /**
  * MenuBar — the fixed frosted strip at the top of the desktop.
@@ -31,6 +33,14 @@ export function MenuBar() {
     if (!focused) return FINDER;
     return getApp(focused.appId)?.name ?? focused.title;
   });
+  const muted = useSound((state) => state.muted);
+
+  function handleToggleSound() {
+    useSound.getState().toggle();
+    // Turning sound *on* answers with a tick — proof it works, and the click
+    // that caused it doubles as the user gesture the AudioContext needs.
+    if (muted) playSound("pop");
+  }
 
   return (
     <header
@@ -70,6 +80,20 @@ export function MenuBar() {
           onClick={() => useMode.getState().setMode("plain")}
         >
           <Globe className="size-3.75" strokeWidth={1.9} aria-hidden />
+        </button>
+        <button
+          type="button"
+          className={ITEM}
+          aria-label={muted ? "Turn sound effects on" : "Turn sound effects off"}
+          aria-pressed={!muted}
+          title={muted ? "Sound effects: off" : "Sound effects: on"}
+          onClick={handleToggleSound}
+        >
+          {muted ? (
+            <VolumeX className="size-3.75 opacity-70" strokeWidth={1.9} aria-hidden />
+          ) : (
+            <Volume2 className="size-3.75" strokeWidth={1.9} aria-hidden />
+          )}
         </button>
         <button type="button" className={ITEM} aria-label="Battery: 82 percent">
           <BatteryMedium className="size-4.25" strokeWidth={1.6} aria-hidden />

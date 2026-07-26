@@ -11,6 +11,7 @@ import { dockIconCenter, dockIconElement } from '@/components/dock/dockIcons'
 import { ResizeHandles, type ResizeDirection } from '@/components/window/ResizeHandles'
 import { TrafficLights } from '@/components/window/TrafficLights'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { playSound } from '@/lib/sounds'
 import { springs } from '@/lib/springs'
 import { MIN_WINDOW_SIZE, useDesktop, type Point, type WindowState } from '@/store/useDesktop'
 
@@ -167,6 +168,7 @@ export function Window({ win, children }: { win: WindowState; children?: ReactNo
   useFocusTrap(sectionRef, isFocused && !win.isMinimized)
 
   function handleClose() {
+    playSound('close')
     closeWindow(win.id)
     // If that was the last visible window, focus falls back to this app's dock
     // icon — the place the window went, and a live starting point for Tab.
@@ -212,6 +214,7 @@ export function Window({ win, children }: { win: WindowState; children?: ReactNo
       x: icon.x - workAreaOrigin.x - x.get(),
       y: icon.y - workAreaOrigin.y - y.get(),
     })
+    playSound('minimize')
     minimizeWindow(win.id)
   }
 

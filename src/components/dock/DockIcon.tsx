@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useAnimationControls, useSpring, useTransform 
 import type { AppDefinition } from '@/apps/registry'
 import { registerDockIcon } from '@/components/dock/dockIcons'
 import { useMagnification } from '@/hooks/useMagnification'
+import { playSound } from '@/lib/sounds'
 import { springs } from '@/lib/springs'
 import { useDesktop } from '@/store/useDesktop'
 
@@ -90,6 +91,7 @@ export function DockIcon({ app }: { app: AppDefinition }) {
       }
     }
 
+    if (!isRunning) playSound('launch')
     openApp(app.id, launchOrigin)
   }
 

@@ -1,5 +1,5 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import { FileText, Folder, Mail, Terminal, UserRound, type LucideIcon } from 'lucide-react'
+import { FileText, Folder, Mail, Terminal, Trash2, UserRound, type LucideIcon } from 'lucide-react'
 import type { Size } from '@/store/useDesktop'
 
 /**
@@ -69,7 +69,15 @@ export const apps: AppDefinition[] = [
     icon: Terminal,
     tile: 'linear-gradient(160deg, oklch(0.36 0.02 280), oklch(0.17 0.015 280))',
     defaultSize: { width: 700, height: 440 },
-    // TODO(phase-8): the command parser. Until then it launches a stand-in.
+    component: lazy(() => import('@/apps/Terminal/Terminal')),
+  },
+  {
+    id: 'trash',
+    name: 'Trash',
+    icon: Trash2,
+    tile: 'linear-gradient(160deg, oklch(0.78 0.015 260), oklch(0.5 0.02 260))',
+    defaultSize: { width: 620, height: 460 },
+    component: lazy(() => import('@/apps/Trash/Trash')),
   },
 ]
 

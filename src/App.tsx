@@ -1,3 +1,4 @@
+import { BootScreen } from '@/components/boot/BootScreen'
 import { Desktop } from '@/components/desktop/Desktop'
 import { Dock } from '@/components/dock/Dock'
 import { MenuBar } from '@/components/menubar/MenuBar'
@@ -23,15 +24,22 @@ export default function App() {
   const isMobile = useIsMobile()
 
   if (mode === 'plain') return <PlainSite />
-  if (isMobile) return <Springboard />
 
   return (
-    <div className="relative h-full w-full">
-      <Desktop>
-        <WindowLayer />
-      </Desktop>
-      <MenuBar />
-      <Dock />
-    </div>
+    <>
+      {isMobile ? (
+        <Springboard />
+      ) : (
+        <div className="relative h-full w-full">
+          <Desktop>
+            <WindowLayer />
+          </Desktop>
+          <MenuBar />
+          <Dock />
+        </div>
+      )}
+      {/* Both shells boot; plain mode is the express lane and skips it. */}
+      <BootScreen />
+    </>
   )
 }

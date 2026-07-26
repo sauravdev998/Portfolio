@@ -26,6 +26,14 @@ export function registerDockIcon(appId: string, element: HTMLElement | null): ()
 }
 
 /**
+ * The tile element itself — for handing keyboard focus back to the dock when
+ * the last window of an app closes, so a keyboard user isn't dropped on `body`.
+ */
+export function dockIconElement(appId: string): HTMLElement | undefined {
+  return tiles.get(appId)
+}
+
+/**
  * Viewport centre of an app's dock tile. Apps with no tile (a deep link, a dev
  * shortcut) fall back to the middle of the dock's strip, which is close enough
  * that the animation still reads as "it went down there".

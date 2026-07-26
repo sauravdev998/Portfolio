@@ -2,13 +2,15 @@ import {
   useEffect,
   useRef,
   useState,
+  type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react'
 import { animate, motion, useDragControls, useMotionValue, useReducedMotion } from 'motion/react'
-import { dockIconCenter } from '@/components/dock/dockIcons'
+import { dockIconCenter, dockIconElement } from '@/components/dock/dockIcons'
 import { ResizeHandles, type ResizeDirection } from '@/components/window/ResizeHandles'
 import { TrafficLights } from '@/components/window/TrafficLights'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { springs } from '@/lib/springs'
 import { MIN_WINDOW_SIZE, useDesktop, type Point, type WindowState } from '@/store/useDesktop'
 
@@ -49,11 +51,23 @@ const OPEN_SCALE_CENTRED = 0.94
 const FOCUS_PULSE = 1.006
 const FOCUS_PULSE_MS = 260
 
+/** Arrow-key nudge, in px. Shift is the fine adjustment. */
+const ARROW_STEP = 24
+const ARROW_STEP_FINE = 4
+
+const ARROW_KEYS: Record<string, Point> = {
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
 }
 
 export function Window({ win, children }: { win: WindowState; children?: ReactNode }) {
+  const sectionRef = useRef<HTMLElement>(null)
   const workArea = useDesktop((state) => state.workArea)
   const workAreaOrigin = useDesktop((state) => state.workAreaOrigin)
   const isFocused = useDesktop((state) => state.focusedId === win.id)
@@ -146,6 +160,46 @@ export function Window({ win, children }: { win: WindowState; children?: ReactNo
     const timer = setTimeout(() => setIsPulsing(false), FOCUS_PULSE_MS)
     return () => clearTimeout(timer)
   }, [isFocused, prefersReducedMotion])
+
+  // The focused window is the active surface: DOM focus lives inside it and
+  // Tab wraps at its edges. The dock and menu bar stay reachable — the trap
+  // only holds focus it already has (see the hook).
+  useFocusTrap(sectionRef, isFocused && !win.isMinimized)
+
+  function handleClose() {
+    closeWindow(win.id)
+    // If that was the last visible window, focus falls back to this app's dock
+    // icon — the place the window went, and a live starting point for Tab.
+    // When another window remains, its own trap picks focus up instead.
+    if (!useDesktop.getState().focusedId) dockIconElement(win.appId)?.focus()
+  }
+
+  function handleKeyDown(event: ReactKeyboardEvent) {
+    if (event.key === 'Escape') {
+      const target = event.target as HTMLElement
+      // First Esc inside a text field only leaves the field — closing the
+      // whole window mid-sentence would throw away what was being typed.
+      if (target.closest('input, textarea, select, [contenteditable="true"]')) {
+        target.blur()
+        sectionRef.current?.focus()
+        return
+      }
+      handleClose()
+      return
+    }
+
+    // Arrow keys move the window, but only when the frame itself has focus —
+    // inside the body they belong to the app (a text caret, a list).
+    const direction = ARROW_KEYS[event.key]
+    if (direction && event.target === event.currentTarget && !win.isMaximized) {
+      event.preventDefault()
+      const step = event.shiftKey ? ARROW_STEP_FINE : ARROW_STEP
+      moveWindow(win.id, {
+        x: win.position.x + direction.x * step,
+        y: win.position.y + direction.y * step,
+      })
+    }
+  }
 
   function handleMinimize() {
     // Measure the icon now rather than reusing the launch origin: the dock
@@ -256,9 +310,12 @@ export function Window({ win, children }: { win: WindowState; children?: ReactNo
 
   return (
     <motion.section
+      ref={sectionRef}
       role="dialog"
       aria-label={win.title}
       aria-modal={false}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
       className={`absolute left-0 top-0 flex flex-col overflow-hidden rounded-xl border ${surface}`}
       // A minimized window stays mounted — see the note above the component —
       // so it has to be taken out of the tab order and off the hit-test path by
@@ -319,7 +376,7 @@ export function Window({ win, children }: { win: WindowState; children?: ReactNo
         <TrafficLights
           title={win.title}
           isMaximized={win.isMaximized}
-          onClose={() => closeWindow(win.id)}
+          onClose={handleClose}
           onMinimize={handleMinimize}
           onToggleMaximize={() => toggleMaximize(win.id)}
         />

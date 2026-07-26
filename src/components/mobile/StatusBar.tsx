@@ -1,5 +1,6 @@
-import { BatteryMedium, SignalHigh, Wifi } from 'lucide-react'
+import { BatteryMedium, Globe, SignalHigh, Wifi } from 'lucide-react'
 import { useMinuteTick } from '@/hooks/useMinuteTick'
+import { useMode } from '@/store/useMode'
 
 /**
  * The mobile stand-in for the menu bar: time on the left, radios on the right,
@@ -32,10 +33,22 @@ export function StatusBar() {
         {FORMAT.format(now)}
       </time>
 
-      <div aria-hidden className="flex items-center gap-1.5">
-        <SignalHigh className="size-4" strokeWidth={2.2} />
-        <Wifi className="size-4" strokeWidth={2.2} />
-        <BatteryMedium className="size-5" strokeWidth={1.8} />
+      <div className="flex items-center gap-1.5">
+        {/* The one live control in the strip — the plain-website escape hatch.
+            It opts back into pointer events; everything else here is décor. */}
+        <button
+          type="button"
+          aria-label="Switch to plain website"
+          onClick={() => useMode.getState().setMode('plain')}
+          className="pointer-events-auto -m-2 p-2"
+        >
+          <Globe className="size-4" strokeWidth={2} aria-hidden />
+        </button>
+        <span aria-hidden className="flex items-center gap-1.5">
+          <SignalHigh className="size-4" strokeWidth={2.2} />
+          <Wifi className="size-4" strokeWidth={2.2} />
+          <BatteryMedium className="size-5" strokeWidth={1.8} />
+        </span>
       </div>
     </header>
   )

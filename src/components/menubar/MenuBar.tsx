@@ -1,8 +1,9 @@
-import { BatteryMedium, Search, SlidersHorizontal, Wifi } from "lucide-react";
+import { BatteryMedium, Globe, Search, SlidersHorizontal, Wifi } from "lucide-react";
 import { getApp } from "@/apps/registry";
 import { Clock } from "@/components/menubar/Clock";
 import { Logo } from "@/components/menubar/Logo";
 import { useDesktop } from "@/store/useDesktop";
+import { useMode } from "@/store/useMode";
 
 /**
  * MenuBar — the fixed frosted strip at the top of the desktop.
@@ -60,6 +61,16 @@ export function MenuBar() {
       </nav>
 
       <div className="flex items-center gap-1">
+        {/* The PostHog-style escape hatch (§8): same content, no window manager. */}
+        <button
+          type="button"
+          className={ITEM}
+          aria-label="Switch to plain website"
+          title="Switch to plain website"
+          onClick={() => useMode.getState().setMode("plain")}
+        >
+          <Globe className="size-3.75" strokeWidth={1.9} aria-hidden />
+        </button>
         <button type="button" className={ITEM} aria-label="Battery: 82 percent">
           <BatteryMedium className="size-4.25" strokeWidth={1.6} aria-hidden />
         </button>

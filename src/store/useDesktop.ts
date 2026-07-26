@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { getApp } from '@/apps/registry'
 
 /**
@@ -131,7 +132,9 @@ function topmostVisible(windows: WindowState[]): WindowId | null {
   return visible.reduce((top, win) => (win.zIndex > top.zIndex ? win : top)).id
 }
 
-export const useDesktop = create<DesktopStore>((set, get) => ({
+export const useDesktop = create<DesktopStore>()(
+  persist(
+    (set, get) => ({
   windows: [],
   focusedId: null,
   topZIndex: 0,
@@ -292,4 +295,34 @@ export const useDesktop = create<DesktopStore>((set, get) => ({
           : win,
       ),
     })),
-}))
+    }),
+    {
+      /**
+       * A refresh restores the desktop as it was left (§8). Only the durable
+       * facts are written: geometry, stacking and focus. `workArea` is a
+       * measurement, remeasured on every mount — and its default of 0×0 is
+       * what protects restored windows, because the first real `setWorkArea`
+       * clamps every position back on-screen, so a window left on a big
+       * monitor can't be stranded outside a smaller one. `launchOrigin` is
+       * dropped: it describes a dock icon from the previous session, and a
+       * restored window should fade in where it is, not fly out of the dock.
+       */
+      name: 'portfolio-desktop',
+      version: 1,
+      partialize: (state) => ({
+        windows: state.windows.map(({ launchOrigin: _launchOrigin, ...win }) => win),
+        focusedId: state.focusedId,
+        topZIndex: state.topZIndex,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return
+        // Resume the id counter past every restored window, so a window opened
+        // this session can never share a React key with one that is mid-exit.
+        nextWindowId = state.windows.reduce((max, win) => {
+          const suffix = Number(win.id.slice(win.id.lastIndexOf('-') + 1))
+          return Number.isFinite(suffix) ? Math.max(max, suffix + 1) : max
+        }, nextWindowId)
+      },
+    },
+  ),
+)

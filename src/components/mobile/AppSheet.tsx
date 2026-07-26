@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useIsPresent, useReducedMotion } from 'motion/react'
 import { AppBody } from '@/apps/AppBody'
 import type { AppDefinition } from '@/apps/registry'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { springs } from '@/lib/springs'
 import type { Point } from '@/store/useDesktop'
 
@@ -26,12 +27,31 @@ export function AppSheet({
   origin: Point
   onClose: () => void
 }) {
+  const sectionRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
   // False while AnimatePresence plays the exit. The sheet still covers the
   // whole screen for those ~300ms, and if it kept its hit-test area a quick
   // tap on the springboard would silently die on a sheet that is already gone.
   const isPresent = useIsPresent()
+
+  // Hand focus back to whatever launched the sheet — the springboard tile a
+  // keyboard user pressed Enter on — once the sheet is truly gone. Declared
+  // before the trap: effects run in order, and the trap's first act is to move
+  // focus into the sheet, which would make `activeElement` the sheet itself.
+  useEffect(() => {
+    const opener = document.activeElement
+    return () => {
+      if (opener instanceof HTMLElement && opener.isConnected) {
+        opener.focus({ preventScroll: true })
+      }
+    }
+  }, [])
+
+  // The sheet is the active surface while present — same contract as a
+  // focused window. Deactivating during the exit releases focus early, so the
+  // restore above isn't fighting the trap.
+  useFocusTrap(sectionRef, isPresent)
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -43,8 +63,10 @@ export function AppSheet({
 
   return (
     <motion.section
+      ref={sectionRef}
       role="dialog"
       aria-label={app.name}
+      tabIndex={-1}
       // Opaque on purpose: this sheet covers the whole screen, so there is
       // nothing behind it worth blurring — and `backdrop-blur` over the full
       // viewport is exactly the cost §8 says mobile can't afford.

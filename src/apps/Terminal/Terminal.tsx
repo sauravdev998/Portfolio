@@ -314,8 +314,10 @@ export default function Terminal() {
 
   return (
     // Clicks land focus on the prompt — unless the visitor is selecting output.
+    // `min-h-full`, not `h-full`: the window body is the scroll container, so a
+    // fixed height would cut the background off at one screenful of scrollback.
     <div
-      className="h-full cursor-text bg-[oklch(0.14_0.02_280_/_0.85)] p-3 font-mono text-[12.5px] leading-relaxed text-white/85"
+      className="min-h-full cursor-text bg-[oklch(0.14_0.02_280_/_0.85)] p-3 font-mono text-[12.5px] leading-relaxed text-white/85"
       onClick={() => {
         if (window.getSelection()?.isCollapsed) inputRef.current?.focus()
       }}

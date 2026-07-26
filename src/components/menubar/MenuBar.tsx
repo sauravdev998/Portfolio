@@ -111,9 +111,7 @@ export function MenuBar() {
             aria-hidden
           />
         </button>
-        <span className={ITEM}>
-          <Clock />
-        </span>
+        <Clock className={ITEM} />
       </div>
     </header>
   );

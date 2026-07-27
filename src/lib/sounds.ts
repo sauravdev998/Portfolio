@@ -1,7 +1,7 @@
 import { useSound } from '@/store/useSound'
 
 /**
- * The OS's voice — four tiny sounds, synthesized at play time.
+ * The OS's voice — a handful of tiny sounds, synthesized at play time.
  *
  * Synthesis rather than samples for the same reason the wallpaper is a
  * gradient: no assets to license, nothing to download, and the sounds can be
@@ -16,7 +16,7 @@ import { useSound } from '@/store/useSound'
  * block.
  */
 
-export type SoundName = 'launch' | 'minimize' | 'close' | 'pop'
+export type SoundName = 'launch' | 'minimize' | 'close' | 'pop' | 'eat' | 'gameover'
 
 let ctx: AudioContext | undefined
 
@@ -47,6 +47,15 @@ export function playSound(name: SoundName) {
       break
     case 'pop': // one short tick — acknowledgement, used by the toggle itself
       tone(audio, now, { from: 900, to: 900, duration: 0.06 })
+      break
+    case 'eat': // Snake picking up an apple. Shorter than everything above:
+      // this can fire twice a second, and anything with a tail would smear.
+      tone(audio, now, { from: 680, to: 1020, duration: 0.07 })
+      break
+    case 'gameover': // two notes falling away — the only sound here that
+      // admits to being a phrase, because it's the only one that ends something
+      tone(audio, now, { from: 400, to: 260, duration: 0.16 })
+      tone(audio, now + 0.13, { from: 270, to: 130, duration: 0.28 })
       break
   }
 }

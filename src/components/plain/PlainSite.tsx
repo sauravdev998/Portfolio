@@ -157,6 +157,20 @@ export function PlainSite() {
           </dl>
         </Section>
 
+        {/* Snake is the one app with nothing to say in a document. Rendering
+            the live canvas here would put a game nobody can reach by scrolling
+            in the middle of a resume, so this is a pointer, not the app. */}
+        <Section title="Also in the OS">
+          <p className="text-[15px] leading-relaxed text-white/75">
+            Snake — a small canvas game that ships in the dock. It wants a keyboard or a
+            touchscreen, so it lives in the desktop and phone shells rather than here.{' '}
+            <button type="button" onClick={() => setMode('os')} className={LINK}>
+              Boot the OS
+            </button>{' '}
+            to play it.
+          </p>
+        </Section>
+
         <footer className="mt-14 border-t border-white/10 pt-6 text-[13px] text-white/40">
           <p>
             Prefer the full experience?{' '}

@@ -1,5 +1,14 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import { FileText, Folder, Mail, Terminal, Trash2, UserRound, type LucideIcon } from 'lucide-react'
+import {
+  FileText,
+  Folder,
+  Gamepad2,
+  Mail,
+  Terminal,
+  Trash2,
+  UserRound,
+  type LucideIcon,
+} from 'lucide-react'
 import type { Size } from '@/store/useDesktop'
 
 /**
@@ -70,6 +79,16 @@ export const apps: AppDefinition[] = [
     tile: 'linear-gradient(160deg, oklch(0.36 0.02 280), oklch(0.17 0.015 280))',
     defaultSize: { width: 700, height: 440 },
     component: lazy(() => import('@/apps/Terminal/Terminal')),
+  },
+  {
+    id: 'snake',
+    name: 'Snake',
+    icon: Gamepad2,
+    tile: 'linear-gradient(160deg, oklch(0.84 0.16 155), oklch(0.52 0.14 168))',
+    // Near-square: the board is a square, and the extra height is the score bar
+    // above it and the touch pad below.
+    defaultSize: { width: 440, height: 520 },
+    component: lazy(() => import('@/apps/Snake/Snake')),
   },
   {
     id: 'trash',

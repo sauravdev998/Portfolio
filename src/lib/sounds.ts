@@ -16,7 +16,7 @@ import { useSound } from '@/store/useSound'
  * block.
  */
 
-export type SoundName = 'launch' | 'minimize' | 'close' | 'pop' | 'eat' | 'gameover'
+export type SoundName = 'launch' | 'minimize' | 'close' | 'pop' | 'eat' | 'merge' | 'gameover'
 
 let ctx: AudioContext | undefined
 
@@ -51,6 +51,10 @@ export function playSound(name: SoundName) {
     case 'eat': // Snake picking up an apple. Shorter than everything above:
       // this can fire twice a second, and anything with a tail would smear.
       tone(audio, now, { from: 680, to: 1020, duration: 0.07 })
+      break
+    case 'merge': // 2048 tiles combining — a fifth below 'eat' and softer, so
+      // a board that merges four times in one press doesn't chirp at you
+      tone(audio, now, { from: 440, to: 620, duration: 0.08 })
       break
     case 'gameover': // two notes falling away — the only sound here that
       // admits to being a phrase, because it's the only one that ends something

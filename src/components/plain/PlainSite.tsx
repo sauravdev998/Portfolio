@@ -60,7 +60,11 @@ export function PlainSite() {
               </li>
             ))}
             <li>
-              <a href={profile.resumeUrl} download className={`${LINK} inline-flex items-center gap-1`}>
+              <a
+                href={profile.resumeUrl}
+                download={`${profile.name.replace(/\s+/g, '_')}_Resume.pdf`}
+                className={`${LINK} inline-flex items-center gap-1`}
+              >
                 <Download className="size-3.5" strokeWidth={2} aria-hidden />
                 Resume (PDF)
               </a>
@@ -157,17 +161,18 @@ export function PlainSite() {
           </dl>
         </Section>
 
-        {/* Snake is the one app with nothing to say in a document. Rendering
-            the live canvas here would put a game nobody can reach by scrolling
-            in the middle of a resume, so this is a pointer, not the app. */}
+        {/* The games are the apps with nothing to say in a document. Rendering
+            a live board here would put a game nobody can reach by scrolling in
+            the middle of a resume, so this is a pointer, not the app. */}
         <Section title="Also in the OS">
           <p className="text-[15px] leading-relaxed text-white/75">
-            Snake — a small canvas game that ships in the dock. It wants a keyboard or a
-            touchscreen, so it lives in the desktop and phone shells rather than here.{' '}
+            Two games ship in the dock: Snake, drawn to a canvas on a fixed clock, and 2048,
+            which moves only when you do. Both want a keyboard or a touchscreen, so they live in
+            the desktop and phone shells rather than here.{' '}
             <button type="button" onClick={() => setMode('os')} className={LINK}>
               Boot the OS
             </button>{' '}
-            to play it.
+            to play them.
           </p>
         </Section>
 

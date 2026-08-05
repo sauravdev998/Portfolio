@@ -22,7 +22,7 @@ export default function Resume() {
         </span>
         <a
           href={profile.resumeUrl}
-          download
+          download={`${profile.name.replace(/\s+/g, '_')}_Resume.pdf`}
           className="flex shrink-0 items-center gap-1.5 rounded-md border border-white/15 bg-white/8 px-2.5 py-1 text-[12px] text-white/85 transition-colors hover:border-white/25 hover:bg-white/15 hover:text-white"
         >
           <Download className="size-3.5" strokeWidth={2} aria-hidden />
@@ -55,6 +55,10 @@ export default function Resume() {
               ))}
             </p>
           </header>
+
+          <Section title="Summary">
+            <p className="text-[13px] leading-relaxed">{profile.summary}</p>
+          </Section>
 
           <Section title="Experience">
             {experience.map((role) => (

@@ -3,6 +3,7 @@ import {
   FileText,
   Folder,
   Gamepad2,
+  Grid2x2,
   Mail,
   Terminal,
   Trash2,
@@ -89,6 +90,16 @@ export const apps: AppDefinition[] = [
     // above it and the touch pad below.
     defaultSize: { width: 440, height: 520 },
     component: lazy(() => import('@/apps/Snake/Snake')),
+  },
+  {
+    id: '2048',
+    name: '2048',
+    icon: Grid2x2,
+    tile: 'linear-gradient(160deg, oklch(0.85 0.15 75), oklch(0.62 0.19 35))',
+    // Square board, plus the score row above it and the hint line or d-pad
+    // below — the same proportions as Snake, for the same reason.
+    defaultSize: { width: 420, height: 540 },
+    component: lazy(() => import('@/apps/Game2048/Game2048')),
   },
   {
     id: 'trash',

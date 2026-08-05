@@ -41,8 +41,8 @@ export interface SkillGroup {
 
 export const profile = {
   name: "Saurav Kumar Mohanta",
-  role: "Software Engineer",
-  location: "India",
+  role: "Full-Stack Developer · Java | Spring Boot | React",
+  location: "Bengaluru, India",
   /** One line, on the About window under your name. Keep it short and confident. */
   tagline: "I build interfaces that feel like objects.",
 
@@ -87,41 +87,71 @@ export const profile = {
     // { label: "X", handle: "@todo", href: "https://x.com/todo" },
   ] satisfies Social[],
 
-  /** Put the real file in `public/` and point at it; used by Resume.app. */
+  /**
+   * The opening paragraph of the CV — the one the Resume window leads with.
+   * Deliberately drier than `bio`: this is the version a recruiter skims.
+   */
+  summary:
+    "Full-stack developer with 2+ years of experience building and troubleshooting enterprise banking platforms and modern web applications. Strong across Java/Spring Boot backends, Oracle and PostgreSQL databases, and React/TypeScript frontends. Comfortable owning features end to end — from secure API and data-model design to production troubleshooting and platform extensibility.",
+
+  /** The real file lives in `public/`; used by Resume.app and PlainSite. */
   resumeUrl: "/resume.pdf",
 };
 
 export const experience: Role[] = [
   {
-    company: "TODO Company",
-    title: "Software Engineer",
-    period: "2024 — Present",
-    location: "Remote",
+    company: "JMR Infotech",
+    title: "Associate Consultant",
+    period: "Mar 2024 — Present",
+    location: "Bengaluru, India · Enterprise Banking (Oracle OBDX)",
     points: [
-      "TODO: what you owned, in one line. Lead with the outcome, not the ticket.",
-      "TODO: a number if you have one — latency, users, build time, cost.",
+      "Configure, customize, and troubleshoot Oracle Banking Digital Experience (OBDX) deployments across WebLogic and Oracle HTTP Server for enterprise banking clients.",
+      "Diagnosed and resolved production incidents including OHS startup failures (missing configuration, orphaned worker processes) and proxy-induced malformed service URLs, restoring platform availability.",
+      "Debugged and fixed Oracle SQL errors (ORA-00933, ORA-00904, ORA-01873) in customized adapter layers, improving the reliability of bespoke banking integrations.",
+      "Authored a comprehensive OBDX Extensibility Guide documenting every major extension point with Java contracts and DB registration scripts, accelerating team onboarding and custom development.",
     ],
-  },
-  {
-    company: "TODO Earlier Company",
-    title: "Frontend Developer",
-    period: "2022 — 2024",
-    points: ["TODO: the thing you shipped that you would still defend today."],
   },
 ];
 
 export const education: Education[] = [
   {
-    institution: "TODO University",
-    qualification: "B.Tech, Computer Science",
-    period: "2018 — 2022",
-    detail: "TODO: honours, thesis, or drop this line.",
+    institution: "ITER, Bhubaneswar",
+    qualification: "B.Tech, Mechanical Engineering",
+    period: "2019 — 2023",
+    detail: "CGPA: 7.71 / 10",
+  },
+  {
+    institution: "Vijayanjali Science Rec. H.S. School, Kuruda",
+    qualification: "Senior Secondary (12th), Science",
+    period: "2019",
+  },
+  {
+    institution: "Jawahar Vidyapitha, Chitrada",
+    qualification: "Secondary (10th)",
+    period: "2017",
   },
 ];
 
 export const skills: SkillGroup[] = [
-  { label: "Languages", items: ["TypeScript", "JavaScript", "Python", "SQL"] },
-  { label: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "Motion"] },
-  { label: "Backend", items: ["Node.js", "Postgres", "Prisma", "REST"] },
-  { label: "Tooling", items: ["Vite", "Git", "Docker", "Vercel"] },
+  {
+    label: "Languages",
+    items: ["Java", "TypeScript", "JavaScript", "SQL", "Rust (learning)"],
+  },
+  {
+    label: "Backend",
+    items: ["Spring Boot", "REST APIs", "OAuth2", "JPA / Hibernate", "Maven"],
+  },
+  {
+    label: "Frontend",
+    items: ["React 19", "TypeScript", "Tailwind CSS", "Zustand", "Vite"],
+  },
+  { label: "Databases", items: ["Oracle DB", "PostgreSQL"] },
+  {
+    label: "Banking / Enterprise",
+    items: ["Oracle OBDX", "WebLogic", "Oracle HTTP Server", "UBS integration"],
+  },
+  {
+    label: "DevOps & Tools",
+    items: ["Git", "GitHub Actions", "Docker / Docker Compose", "pnpm"],
+  },
 ];
